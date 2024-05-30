@@ -5,7 +5,7 @@ deepldoc is a tool that automatically translates your project's documentation in
 
 ## How to use
 
-First, create an account for the DeepL API. After creating an account, obtain an API key.
+First, [create a free API account](https://www.deepl.com/pro?cta=apiDocsHeader#developer). After creating an account, obtain an API key.
 Next, set the API key as an environment variable. Execute the following command in the terminal:
 
 ```sh
