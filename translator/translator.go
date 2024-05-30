@@ -18,28 +18,28 @@ type DeepLResponse struct {
 }
 
 func TranslateTextWithExclusions(text, targetLang string) (string, error) {
-    re := regexp.MustCompile("(?s)(```.*?```)")
-    parts := re.Split(text, -1)
+	re := regexp.MustCompile("(?s)(`.*?`|```.*?```)")
+	parts := re.Split(text, -1)
 
-    for i, part := range parts {
-        if !strings.HasPrefix(part, "```") {
-            result, err := Translate(part, targetLang)
-            if err != nil {
-                return "", err
-            }
-            parts[i] = result
-        }
-    }
+	for i, part := range parts {
+		if !strings.HasPrefix(part, "`") {
+			result, err := Translate(part, targetLang)
+			if err != nil {
+				return "", err
+			}
+			parts[i] = result
+		}
+	}
 
-    matches := re.FindAllString(text, -1)
+	matches := re.FindAllString(text, -1)
 
-    if len(matches) != 0 {
-        for i, match := range matches {
-            parts = insert(parts, match, 2*i+1)
-        }
-    }
+	if len(matches) != 0 {
+		for i, match := range matches {
+			parts = insert(parts, match, 2*i+1)
+		}
+	}
 
-    return strings.Join(parts, ""), nil
+	return strings.Join(parts, ""), nil
 }
 
 // insert function to add back original code blocks
