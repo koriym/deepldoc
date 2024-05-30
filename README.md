@@ -2,6 +2,19 @@
 
 **deepldoc**  is a tool that automatically translates your project's documentation into another language. Written in the Go language, it uses DeepL's API as the translation engine.
 
+## Installation
+
+You can install **deepldoc** and **deepl** using Homebrew:
+
+```sh
+brew tap koriym/deepldoc
+brew install deepldoc
+brew install deepl
+```
+
+
+Alternatively, if you prefer not to use Homebrew, you can download and run the binaries directly by following the steps in the **How to Download and Run Binaries** section below.
+
 ## How to use
 
 ### 1. Create a Free API Account
