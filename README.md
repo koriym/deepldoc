@@ -1,37 +1,38 @@
 # A Command line tool for deepl
 
-
-deepldoc is a tool that automatically translates your project's documentation into another language, written in the Go language and using DeepL connected via API as the translation engine.
+**deepldoc**  is a tool that automatically translates your project's documentation into another language. Written in the Go language, it uses DeepL's API as the translation engine.
 
 ## How to use
 
-First, create an account for the DeepL API. After creating an account, obtain an API key.
-Next, set the API key as an environment variable. Execute the following command in the terminal:
+### 1. Create a Free API Account
+
+- After [creating an account](https://www.deepl.com/pro?cta=apiDocsHeader#developer), obtain an API key.
+- Set the API key as an environment variable by executing the following command in the terminal:
 
 ```sh
 export DEEPL_API_KEY=your_api_key_here
 ```
 
-## deepl
+### 2. Using the `deepl` Command
 
-The additional translation command deepl is used as follows:
+- The `deepl` command is used as follows:
 
-```
-. /deepl text target_language
+```sh
+. /deepl text [target_language]
 ``` 
 
 - **text** is the text to be translated.
 - **target_language** is the language code of the target language.
 
-## deepldoc
+### 3. Using the `deepldoc` Command
 
-To use deepldoc, follow these instructions:
+To use `deepldoc`, follow these instructions:
 
 ```sh
-. /deepldoc your_directory target_language file_extension
-``````
+. /deepldoc source_directory [target_language] [file_extension]
+```
 
-- **your_directory** is the path to the directory containing the documents you want to translate.
+- **source_directory** is the path to the directory containing the documents you want to translate.
 - **target_language** is the language code of the target language (e.g. 'ja'). If omitted, 'ja' is used by default.
 - **file_extension** is the extension of the file to be translated (e.g. 'md'). If omitted, 'md' is used by default.
 
@@ -42,27 +43,38 @@ To use deepldoc, follow these instructions:
 
 - **deepldoc** preserves code blocks and inline code in your documents. Text wrapped in single (`) or triple backticks (```) will not be translated, ensuring accurate representation of your code samples.
 
-## How to Download and Run Release Assets
+## How to Download and Run Binaries
 
 Follow these steps to download and run the `deepl` and `deepldoc` files:
 
-1. Go to the [releases page](https://github.com/your-repository/releases) and download `deepl` and `deepldoc`.
+### 1. Download
 
-2. Open a terminal and navigate to your downloads folder:
-    ```sh
-    cd ~/Downloads
-    ```
+- Go to the [releases page](https://github.com/koriym/deepldoc/releases) and download `deepl` and `deepldoc`.
 
-3. Make the files executable:
-    ```sh
-    chmod +x deepl
-    chmod +x deepldoc
-    ```
+### 2. Make the Files Executable
+- Open a terminal and navigate to your downloads folder:
+```sh
+cd ~/Downloads
+```
 
-4. Run the files:
-    ```sh
-    ./deepl
-    ./deepldoc
-    ```
+- Make the files executable:
+
+```sh
+chmod +x deepl
+chmod +x deepldoc
+```
+
+### 3. Run the files:
+
+```sh
+./deepl
+./deepldoc
+```
 
 That's it!
+
+## FAQ
+
+### `error: unexpected status code: 403, body:` 
+
+This indicates that the API KEY is not set in the environment variable. Use `echo $DEEPL_API_KEY` to check.
