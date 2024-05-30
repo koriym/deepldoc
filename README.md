@@ -28,10 +28,10 @@ The additional translation command deepl is used as follows:
 To use deepldoc, follow these instructions:
 
 ```sh
-. /deepldoc your_directory target_language file_extension
+. /deepldoc source_directory target_language file_extension
 ``````
 
-- **your_directory** is the path to the directory containing the documents you want to translate.
+- **source_directory** is the path to the directory containing the documents you want to translate.
 - **target_language** is the language code of the target language (e.g. 'ja'). If omitted, 'ja' is used by default.
 - **file_extension** is the extension of the file to be translated (e.g. 'md'). If omitted, 'md' is used by default.
 
