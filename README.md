@@ -70,3 +70,9 @@ chmod +x deepldoc
 ```
 
 That's it!
+
+## FAQ
+
+### `error: unexpected status code: 403, body:` 
+
+This indicates that the API KEY is not set in the environment variable. Use `echo $DEEPL_API_KEY` to check.
