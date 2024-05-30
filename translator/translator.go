@@ -1,5 +1,4 @@
 package translator
-
 import (
 	"bytes"
 	"encoding/json"
@@ -9,18 +8,18 @@ import (
 	"os"
 )
 
-// DeepL APIレスポンスの構造体
+// Structure of DeepL API response
 type DeepLResponse struct {
 	Translations []struct {
 		Text string `json:"text"`
 	} `json:"translations"`
 }
 
-// 翻訳関数
+// Translation function
 func Translate(text string, targetLang string) (string, error) {
-	apiKey := os.Getenv("DEEPL_API_KEY") // 環境変数からDeepL APIキーを読み込む
+	apiKey := os.Getenv("DEEPL_API_KEY") // Load the DeepL API key from environment variables
 	url := "https://api-free.deepl.com/v2/translate"
-	// リクエストボディの作成
+	// Create request body
 	reqBody, err := json.Marshal(map[string]interface{}{
 		"text":        []string{text},
 		"target_lang": targetLang,
@@ -28,21 +27,21 @@ func Translate(text string, targetLang string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	// HTTP POSTリクエストの作成
+	// Create HTTP POST request
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(reqBody))
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "DeepL-Auth-Key "+apiKey)
-	// HTTPクライアントの作成
+	// Create HTTP client
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
-	// ステータスコードをチェック
+	// Check status code
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -50,12 +49,12 @@ func Translate(text string, targetLang string) (string, error) {
 		}
 		return "", fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(bodyBytes))
 	}
-	// レスポンスボディの読み取り
+	// Read response body
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
-	// レスポンスのパース
+	// Parse response
 	var deeplResp DeepLResponse
 	err = json.Unmarshal(body, &deeplResp)
 	if err != nil {

@@ -1,34 +1,80 @@
 name: Build and Release
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*.*.*'
+  repository_dispatch:
+    types: [build-release]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        path: [deepl, deepldoc]
+
     steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.22  # GoLand 2023.3.5 uses Go 1.22
+          go-version: '1.22.2'
 
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Go environment info
+        run: go env
 
-      - name: Get dependencies
-        run: go get -v -t -d ./...
-
-      - name: Build
+      - name: Build ${{ matrix.path }}
         run: |
-          GOOS=linux GOARCH=amd64 go build -v -o build/linux/deepldoc cmd/deepldoc/main.go
-          GOOS=darwin GOARCH=amd64 go build -v -o build/darwin/deepldoc cmd/deepldoc/main.go
-          GOOS=windows GOARCH=amd64 go build -v -o build/windows/deepldoc.exe cmd/deepldoc/main.go
+          cd ${{ matrix.path }}
+          GOOS=darwin GOARCH=amd64 go build -o ../${{ matrix.path }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.path }}
+          path: ./${{ matrix.path }}/${{ matrix.path }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if event is push with tags
+        id: check_event
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "continue=true" >> $GITHUB_ENV
+          else
+            echo "continue=false" >> $GITHUB_ENV
+          fi
+
+      - name: Stop if not a tagged push
+        if: env.continue == 'false'
+        run: echo "This job runs only for tagged push events."
+
+      - name: Download deepl artifact
+        if: env.continue == 'true'
+        uses: actions/download-artifact@v2
+        with:
+          name: deepl
+
+      - name: Download deepldoc artifact
+        if: env.continue == 'true'
+        uses: actions/download-artifact@v2
+        with:
+          name: deepldoc
 
       - name: Create Release
         id: create_release
+        if: env.continue == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,33 +84,24 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v2
+      - name: Upload deepl asset
+        if: env.continue == 'true'
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/linux/deepldoc
-          asset_name: deepldoc-linux
+          asset_path: ./deepl
+          asset_name: deepl
           asset_content_type: application/octet-stream
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v2
+      - name: Upload deepldoc asset
+        if: env.continue == 'true'
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/darwin/deepldoc
-          asset_name: deepldoc-darwin
-          asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/windows/deepldoc.exe
-          asset_name: deepldoc-windows.exe
+          asset_path: ./deepldoc
+          asset_name: deepldoc
           asset_content_type: application/octet-stream
