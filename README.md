@@ -38,9 +38,9 @@ To use deepldoc, follow these instructions:
 
 ### Notes
 
-It is important to specify the correct file path and language. If each is not specified correctly, an error will occur.
-deepldoc translates files with the relevant file extensions and copies files with non-relevant extensions as they are. This preserves the original directory structure.
-deepldoc and deepl will help you with your multilingual projects. Please check it thoroughly and give us feedback if you have any problems.
+- **deepldoc** translates files with the relevant file extensions and copies files with non-relevant extensions as they are. This preserves the original directory structure.
+
+- **deepldoc** preserves code blocks and inline code in your documents. Text wrapped in single (`) or triple backticks (```) will not be translated, ensuring accurate representation of your code samples.
 
 ## How to Download and Run Release Assets
 
