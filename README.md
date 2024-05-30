@@ -17,7 +17,7 @@ export DEEPL_API_KEY=your_api_key_here
 The additional translation command deepl is used as follows:
 
 ```
-. /deepl text target_language
+. /deepl text [target_language]
 ``` 
 
 - **text** is the text to be translated.
@@ -28,7 +28,7 @@ The additional translation command deepl is used as follows:
 To use deepldoc, follow these instructions:
 
 ```sh
-. /deepldoc source_directory target_language file_extension
+. /deepldoc source_directory [target_language] [file_extension]
 ``````
 
 - **source_directory** is the path to the directory containing the documents you want to translate.
