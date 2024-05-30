@@ -46,7 +46,7 @@ deepldoc and deepl will help you with your multilingual projects. Please check i
 
 Follow these steps to download and run the `deepl` and `deepldoc` files:
 
-1. Go to the [releases page](https://github.com/your-repository/releases) and download `deepl` and `deepldoc`.
+1. Go to the [releases page](https://github.com/koriym/deepldoc/releases) and download `deepl` and `deepldoc`.
 
 2. Open a terminal and navigate to your downloads folder:
     ```sh
