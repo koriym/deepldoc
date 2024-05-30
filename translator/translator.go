@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 )
 
 // Structure of DeepL API response
@@ -13,6 +15,39 @@ type DeepLResponse struct {
 	Translations []struct {
 		Text string `json:"text"`
 	} `json:"translations"`
+}
+
+func TranslateTextWithExclusions(text, targetLang string) (string, error) {
+    re := regexp.MustCompile("(?s)(```.*?```)")
+    parts := re.Split(text, -1)
+
+    for i, part := range parts {
+        if !strings.HasPrefix(part, "```") {
+            result, err := Translate(part, targetLang)
+            if err != nil {
+                return "", err
+            }
+            parts[i] = result
+        }
+    }
+
+    matches := re.FindAllString(text, -1)
+
+    if len(matches) != 0 {
+        for i, match := range matches {
+            parts = insert(parts, match, 2*i+1)
+        }
+    }
+
+    return strings.Join(parts, ""), nil
+}
+
+// insert function to add back original code blocks
+func insert(slice []string, element string, index int) []string{
+    slice = append(slice, "")
+    copy(slice[index+1:], slice[index:])
+    slice[index] = element
+    return slice
 }
 
 // Translation function
