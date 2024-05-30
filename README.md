@@ -39,7 +39,9 @@ To use `deepldoc`, follow these instructions:
 
 ### Notes
 
-**deepldoc** translates files with the relevant file extensions and copies files with non-relevant extensions as they are. This preserves the original directory structure.
+- **deepldoc** translates files with the relevant file extensions and copies files with non-relevant extensions as they are. This preserves the original directory structure.
+
+- **deepldoc** preserves code blocks and inline code in your documents. Text wrapped in single (`) or triple backticks (```) will not be translated, ensuring accurate representation of your code samples.
 
 ## How to Download and Run Binaries
 

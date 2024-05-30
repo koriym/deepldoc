@@ -54,7 +54,7 @@ func translateAndSaveFile(path, directory, targetLang string) {
 		return
 	}
 
-	translatedContent, err := translator.Translate(string(fileContent), targetLang)
+	translatedContent, err := translator.TranslateTextWithExclusions(string(fileContent), targetLang)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		return
