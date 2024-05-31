@@ -109,8 +109,7 @@ func isAlnum(s string) bool {
 
 func isBlockDelimiter(line string) bool {
 	trimmedLine := strings.TrimSpace(line)
-	isDelimeter := trimmedLine == "```" || trimmedLine == "~~~" || trimmedLine == "<ignode>" || trimmedLine == "</ignode>"
-
+	isDelimeter := trimmedLine == "```" || trimmedLine == "~~~" || trimmedLine == "<ignore>" || trimmedLine == "</ignore>"
 	return isDelimeter
 }
 
