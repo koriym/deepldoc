@@ -54,7 +54,7 @@ To use `deepldoc`, follow these instructions:
 
 - **deepldoc** translates files with the relevant file extensions and copies files with non-relevant extensions as they are. This preserves the original directory structure.
 
-- **deepldoc** preserves code blocks and inline code in your documents. Text wrapped in single (`) or triple backticks (```) will not be translated, ensuring accurate representation of your code samples.
+- **deepldoc** preserves code blocks and links in your documents. Text wrapped in triple backticks (``` and ~~~)  will not be translated, ensuring accurate representation of your code samples.
 
 ## How to Download and Run Binaries
 
@@ -85,9 +85,3 @@ chmod +x deepldoc
 ```
 
 That's it!
-
-## FAQ
-
-### `error: unexpected status code: 403, body:` 
-
-This indicates that the API KEY is not set in the environment variable. Use `echo $DEEPL_API_KEY` to check.
