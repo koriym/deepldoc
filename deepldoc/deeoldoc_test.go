@@ -4,48 +4,31 @@ import (
 	"testing"
 )
 
-func TestReplaceCodeBlocks(t *testing.T) {
-	testCases := []struct {
-		name         string
-		input        string
-		expectedText string
-	}{
-		{
-			name:         "single code block",
-			input:        "```go\nfmt.Println(\"Hello, world!\")\n```",
-			expectedText: "<ignore lang=\"go\">\nfmt.Println(\"Hello, world!\")\n</ignore>",
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			actualText := replaceCodeBlocks(tc.input)
-			if actualText != tc.expectedText {
-				t.Errorf("expected %s, got %s", tc.expectedText, actualText)
-			}
-		})
-	}
-}
-
-func TestRestoreCodeBlocks(t *testing.T) {
-	testCases := []struct {
-		name     string
+func TestWrapCodeBlocks(t *testing.T) {
+	var tests = []struct {
 		input    string
 		expected string
 	}{
 		{
-			name:     "single code block",
-			input:    "<ignore lang=\"go\">\nfmt.Println(\"Hello, world!\")\n</ignore>",
-			expected: "```go\nfmt.Println(\"Hello, world!\")```",
+			"Here is my code: ```go\nfmt.Println(\"Hello, world!\")\n``` Cool, right?",
+			"Here is my code: <ignore>```go\nfmt.Println(\"Hello, world!\")\n```</ignore> Cool, right?",
 		},
-		// Add more test cases as needed
+		{
+			"No code here!",
+			"No code here!",
+		},
+		{
+			"```python\ndef hello():\n    print(\"Hello, world!\")\n```\n```ruby\nputs \"Hello, world!\"\n```",
+			"<ignore>```python\ndef hello():\n    print(\"Hello, world!\")\n```</ignore>\n<ignore>```ruby\nputs \"Hello, world!\"\n```</ignore>",
+		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			actual := restoreCodeBlocks(tc.input)
-			if actual != tc.expected {
-				t.Errorf("expected %s, got %s", tc.expected, actual)
+	for _, tt := range tests {
+		testname := tt.input
+		t.Run(testname, func(t *testing.T) {
+			ans := wrapCodeBlocks(tt.input)
+			if ans != tt.expected {
+				t.Errorf("got %s, want %s", ans, tt.expected)
 			}
 		})
 	}
