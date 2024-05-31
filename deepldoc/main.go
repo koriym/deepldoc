@@ -55,8 +55,13 @@ func translateAndSaveFile(path, directory, targetLang string) {
 		return
 	}
 
-	replaced := wrapCodeBlocks(string(fileContent))
-	translatedContent, err := translator.Translate(replaced, targetLang)
+	lines := strings.Split(string(fileContent), "\n")
+	paragraphs := processParagraphs(lines)
+	paragraphText := strings.Join(paragraphs, "\n")
+
+	wrapped := wrapCodeBlocks(paragraphText)
+
+	translatedContent, err := translator.Translate(wrapped, targetLang)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		return
@@ -97,12 +102,62 @@ func copyFile(path, directory, targetLang string) {
 	}
 }
 
+func isAlnum(s string) bool {
+	return regexp.MustCompile(`\w`).MatchString(s)
+}
+
+func isBlockDelimiter(line string) bool {
+	trimmed := strings.TrimSpace(line)
+	// check if line is a block delimiter
+	return strings.HasPrefix(trimmed, "`") || strings.HasPrefix(trimmed, "~")
+}
+
+func processParagraphs(lines []string) []string {
+	var paragraphs []string
+	var tempLine []string
+	var inBlock bool // track whether the current line is in a block
+
+	for _, line := range lines {
+		if isBlockDelimiter(line) {
+			inBlock = !inBlock
+			if len(tempLine) > 0 {
+				paragraphs = append(paragraphs, strings.Join(tempLine, " "))
+				tempLine = nil
+			}
+			paragraphs = append(paragraphs, line)
+		} else {
+			if !inBlock {
+				if len(strings.TrimSpace(line)) == 0 {
+					if len(tempLine) > 0 {
+						paragraphs = append(paragraphs, strings.Join(tempLine, " "))
+						tempLine = nil
+					}
+					paragraphs = append(paragraphs, line)
+				} else {
+					tempLine = append(tempLine, line)
+				}
+			} else {
+				paragraphs = append(paragraphs, line)
+			}
+		}
+	}
+	if len(tempLine) > 0 {
+		paragraphs = append(paragraphs, strings.Join(tempLine, " "))
+	}
+
+	return paragraphs
+}
+
 func wrapCodeBlocks(input string) string {
-	codeBlockRegex := regexp.MustCompile("(```[\\s\\S]*?```|`.*?`|~~~[\\s\\S]*?~~~)")
-	matches := codeBlockRegex.FindAllString(input, -1)
+	codeBlockRegex := regexp.MustCompile("(```[\\s\\S]*?```|`.*?`|~~~[\\s\\S]*?~~~|\\[[^\\]]*\\]\\([^\\)]*\\))")
+	matches := codeBlockRegex.FindAllStringIndex(input, -1)
+	offset := 0
 	for _, match := range matches {
-		placeholder := "<ignore>" + match + "</ignore>"
-		input = strings.Replace(input, match, placeholder, 1)
+		start, end := match[0]+offset, match[1]+offset
+		original := input[start:end]
+		placeholder := "<ignore>" + original + "</ignore>"
+		input = input[:start] + placeholder + input[end:]
+		offset += len(placeholder) - len(original)
 	}
 	return input
 }

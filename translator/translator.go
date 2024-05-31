@@ -3,12 +3,11 @@ package translator
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"regexp"
-	"strings"
 )
 
 // Structure of DeepL API response
@@ -18,45 +17,11 @@ type DeepLResponse struct {
 	} `json:"translations"`
 }
 
-func TranslateTextWithExclusions(text, targetLang string) (string, error) {
-	re := regexp.MustCompile("(?s)(`.*?`|```.*?```)")
-	parts := re.Split(text, -1)
-
-	for i, part := range parts {
-		if !strings.HasPrefix(part, "`") {
-			result, err := Translate(part, targetLang)
-			if err != nil {
-				return "", err
-			}
-			parts[i] = result
-		}
-	}
-
-	matches := re.FindAllString(text, -1)
-
-	if len(matches) != 0 {
-		for i, match := range matches {
-			parts = insert(parts, match, 2*i+1)
-		}
-	}
-
-	return strings.Join(parts, ""), nil
-}
-
-// insert function to add back original code blocks
-func insert(slice []string, element string, index int) []string {
-	slice = append(slice, "")
-	copy(slice[index+1:], slice[index:])
-	slice[index] = element
-	return slice
-}
-
 // Translation function
 func Translate(text string, targetLang string) (string, error) {
 	apiKey := os.Getenv("DEEPL_API_KEY") // Load the DeepL API key from environment variables
 	if apiKey == "" {
-		fmt.Println("API key is empty. Please set the DEEPL_API_KEY environment variable.")
-		os.Exit(1)
+		return "", errors.New("API key is empty. Please set the DEEPL_API_KEY environment variable.")
 	}
 	url := "https://api-free.deepl.com/v2/translate"
 	// Create request body
