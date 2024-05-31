@@ -1,4 +1,5 @@
 package translator
+
 import (
 	"bytes"
 	"encoding/json"
@@ -43,16 +44,20 @@ func TranslateTextWithExclusions(text, targetLang string) (string, error) {
 }
 
 // insert function to add back original code blocks
-func insert(slice []string, element string, index int) []string{
-    slice = append(slice, "")
-    copy(slice[index+1:], slice[index:])
-    slice[index] = element
-    return slice
+func insert(slice []string, element string, index int) []string {
+	slice = append(slice, "")
+	copy(slice[index+1:], slice[index:])
+	slice[index] = element
+	return slice
 }
 
 // Translation function
 func Translate(text string, targetLang string) (string, error) {
 	apiKey := os.Getenv("DEEPL_API_KEY") // Load the DeepL API key from environment variables
+	if apiKey == "" {
+		fmt.Println("API key is empty. Please set the DEEPL_API_KEY environment variable.")
+		os.Exit(1)
+	}
 	url := "https://api-free.deepl.com/v2/translate"
 	// Create request body
 	reqBody, err := json.Marshal(map[string]interface{}{
