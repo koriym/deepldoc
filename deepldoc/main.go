@@ -153,7 +153,7 @@ func processParagraphs(lines []string) []string {
 }
 
 func wrapCodeBlocks(input string) string {
-	codeBlockRegex := regexp.MustCompile("(```[\\s\\S]*?```|`.*?`|~~~[\\s\\S]*?~~~)")
+	codeBlockRegex := regexp.MustCompile("(```[\\s\\S]*?```|`.*?`|~~~[\\s\\S]*?~~~|\\[[^\\]]*\\]\\([^\\)]*\\))")
 	matches := codeBlockRegex.FindAllString(input, -1)
 	for _, match := range matches {
 		placeholder := "<ignore>" + match + "</ignore>"
