@@ -107,7 +107,6 @@ func isAlnum(s string) bool {
 	return regexp.MustCompile(`\w`).MatchString(s)
 }
 
-// 指定された行がブロックデリミタかどうかを判断します
 func isBlockDelimiter(line string) bool {
 	trimmedLine := strings.TrimSpace(line)
 	isDelimeter := trimmedLine == "```" || trimmedLine == "~~~" || trimmedLine == "<ignode>" || trimmedLine == "</ignode>"
@@ -119,7 +118,7 @@ func processParagraphs(lines []string) []string {
 
 	var paragraphs []string
 	var tempLine []string
-	var inBlock bool // 現在見ている行がブロック内かどうかを記録します
+	var inBlock bool // Records whether the line you are currently looking at is in a block
 
 	for _, line := range lines {
 		if isBlockDelimiter(line) {
@@ -128,9 +127,9 @@ func processParagraphs(lines []string) []string {
 				tempLine = nil
 			}
 			paragraphs = append(paragraphs, line)
-			inBlock = !inBlock // コードブロックまたはignodeブロックの内部と外部を切り替えます
+			inBlock = !inBlock
 		} else if inBlock {
-			paragraphs = append(paragraphs, line) // ブロック内の行をそのまま追加します
+			paragraphs = append(paragraphs, line)
 		} else if len(strings.TrimFunc(line, unicode.IsSpace)) == 0 || !isAlnum(line) {
 			if len(tempLine) > 0 {
 				paragraphs = append(paragraphs, strings.Join(tempLine, " "))
