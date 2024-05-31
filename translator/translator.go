@@ -61,8 +61,10 @@ func Translate(text string, targetLang string) (string, error) {
 	url := "https://api-free.deepl.com/v2/translate"
 	// Create request body
 	reqBody, err := json.Marshal(map[string]interface{}{
-		"text":        []string{text},
-		"target_lang": targetLang,
+		"text":         []string{text},
+		"target_lang":  targetLang,
+		"tag_handling": "xml",
+		"ignore_tags":  []string{"ignore"}, // pass array of strings
 	})
 	if err != nil {
 		return "", err
