@@ -1,5 +1,7 @@
 # A Command line tool for deepl
 
+[![go_test](https://github.com/koriym/deepldoc/actions/workflows/go_test.yml/badge.svg)](https://github.com/koriym/deepldoc/actions/workflows/go_test.yml)
+
 **deepldoc**  is a tool that automatically translates your project's documentation into another language. Written in the Go language, it uses DeepL's API as the translation engine.
 
 ## Installation
